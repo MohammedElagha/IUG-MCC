@@ -60,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("db_data", document.getId() + " => " + document.getData().get("name"));
+                                String id = document.getId();
+				Map<String, Object> data = document.getData();
+				String name = (String) data.get("name");
                             }
                         }
                     }
