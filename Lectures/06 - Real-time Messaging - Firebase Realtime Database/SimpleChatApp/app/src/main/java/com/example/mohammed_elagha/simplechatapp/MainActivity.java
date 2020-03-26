@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.mohammed_elagha.simplechatapp.auth.AuthenticationSample;
 import com.example.mohammed_elagha.simplechatapp.chat.ChatSample;
+import com.example.mohammed_elagha.simplechatapp.chat.MessageReader;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -21,7 +22,10 @@ public class MainActivity extends AppCompatActivity {
     EditText editText;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    DatabaseReference chatsDatabaseReference;
     ChatSample chatSample;
+    MessageReader messageReader;
+    public static final String FIREBASE_DATABASE_CHILD_PATH = "chats";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +38,17 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
+        chatsDatabaseReference = databaseReference.child(FIREBASE_DATABASE_CHILD_PATH);
 
-        chatSample = new ChatSample(databaseReference);
+        chatSample = new ChatSample(chatsDatabaseReference);
+        messageReader = new MessageReader();
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String messageTxt = editText.getText().toString();
-                lastMagTV.setText(messageTxt);
                 chatSample.createMessage(messageTxt);
+                lastMagTV.setText(messageReader.readMessage(chatsDatabaseReference));
             }
         });
     }
